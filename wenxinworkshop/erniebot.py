@@ -50,14 +50,18 @@ class ERNIEBot:
             'client_secret': secret_key
         }
 
-        response: AccessTokenResponse = requests.request(
+        response: requests.Response = requests.request(
             method="POST",
             url=url,
             headers=headers,
             params=params
-        ).json()
+        )
 
-        return response['access_token']
+        try:
+            response_json: AccessTokenResponse = response.json()
+            return response_json['access_token']
+        except:
+            raise ValueError(response.text)
 
     def __call__(
         self: 'ERNIEBot',
@@ -101,8 +105,11 @@ class ERNIEBot:
                 chunk_size=chunk_size
             )
         else:
-            response_json: ChatResponse = response.json()
-            return response_json['result']
+            try:
+                response_json: ChatResponse = response.json()
+                return response_json['result']
+            except:
+                raise ValueError(response.text)
 
     @staticmethod
     def stream_response(
@@ -114,8 +121,11 @@ class ERNIEBot:
             decode_unicode='UTF-8'
         ):
             if response_line:
-                response_json: ChatResponse = json.loads(response_line[5:])
-                yield response_json['result']
+                try:
+                    response_json: ChatResponse = json.loads(response_line[5:])
+                    yield response_json['result']
+                except:
+                    raise ValueError(response_line)
 
 
 if __name__ == "__main__":
