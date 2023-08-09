@@ -3,10 +3,13 @@ from typing import TypedDict, Literal, Optional
 
 
 __all__ = [
-    'Headers',
+    'Texts',
+    'Headers', 'Params',
     'Message', 'Messages',
-    'ChatParams', 'ChatData', 'ChatResponse',
-    'AccessTokenParams', 'AccessTokenResponse'
+    'Embedding', 'Embeddings',
+    'ChatData', 'ChatResponse', 'ChatUsage',
+    'AccessTokenParams', 'AccessTokenResponse',
+    'EmbeddingData', 'EmbeddingResponse', 'EmbeddingUsage', 'EmbeddingObject'
 ]
 
 
@@ -15,7 +18,7 @@ class Message(TypedDict):
     content: str
 
 
-class ChatParams(TypedDict):
+class Params(TypedDict):
     access_token: str
 
 
@@ -47,6 +50,30 @@ class ChatResponse(TypedDict):
     usage: ChatUsage
 
 
+class EmbeddingData(TypedDict):
+    input: List[str]
+    user_id: Optional[str]
+
+
+class EmbeddingObject(TypedDict):
+    object: Literal['embedding']
+    embedding: 'Embedding'
+    index: int
+
+
+class EmbeddingUsage(TypedDict):
+    prompt_tokens: int
+    total_tokens: int
+
+
+class EmbeddingResponse(TypedDict):
+    id: str
+    object: str
+    created: int
+    data: List[EmbeddingObject]
+    usage: EmbeddingUsage
+
+
 class AccessTokenParams(TypedDict):
     grant_type: str
     client_id: str
@@ -67,9 +94,7 @@ class Headers(TypedDict):
     Accept: Optional[str]
 
 
-class StateDict(TypedDict):
-    user_id: str
-    messages: 'Messages'
-
-
+Texts = List[str]
+Embedding = List[float]
+Embeddings = List[Embedding]
 Messages = List[Message]

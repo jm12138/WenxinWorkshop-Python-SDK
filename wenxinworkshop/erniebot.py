@@ -1,15 +1,52 @@
 import json
 import requests
 
-from typing import Optional, Generator, Union, Dict
+from typing import Optional, Generator, Union
 
-from .types import Messages
-from .types import Message, Headers
-from .types import ChatParams, ChatData, ChatResponse
+from .types import Messages, Embeddings, Texts
+
+from .types import Message
+from .types import Headers, Params
+from .types import ChatData, ChatResponse
+from .types import EmbeddingData, EmbeddingResponse
 from .types import AccessTokenParams, AccessTokenResponse
 
 
-__all__ = ['ERNIEBot']
+__all__ = ['ERNIEBot', 'ERNIEEmbedding', 'get_access_token']
+
+
+def get_access_token(
+    api_key: str,
+    secret_key: str
+) -> str:
+    '''
+    根据 API Key 和 Secret Key 获取 Access Token
+    '''
+    url = "https://aip.baidubce.com/oauth/2.0/token"
+
+    headers: Headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+
+    params: AccessTokenParams = {
+        'grant_type': 'client_credentials',
+        'client_id': api_key,
+        'client_secret': secret_key
+    }
+
+    response: requests.Response = requests.request(
+        method="POST",
+        url=url,
+        headers=headers,
+        params=params
+    )
+
+    try:
+        response_json: AccessTokenResponse = response.json()
+        return response_json['access_token']
+    except:
+        raise ValueError(response.text)
 
 
 class ERNIEBot:
@@ -23,45 +60,10 @@ class ERNIEBot:
         url: str = ERNIEBot
     ) -> None:
         self.url = url
-        self.messages_dict: Dict[str, Messages] = {}
-        self.access_token = self.get_access_token(
+        self.access_token = get_access_token(
             api_key=api_key,
             secret_key=secret_key
         )
-
-    @staticmethod
-    def get_access_token(
-        api_key: str,
-        secret_key: str
-    ) -> str:
-        '''
-        根据 API Key 和 Secret Key 获取 Access Token
-        '''
-        url = "https://aip.baidubce.com/oauth/2.0/token"
-
-        headers: Headers = {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        }
-
-        params: AccessTokenParams = {
-            'grant_type': 'client_credentials',
-            'client_id': api_key,
-            'client_secret': secret_key
-        }
-
-        response: requests.Response = requests.request(
-            method="POST",
-            url=url,
-            headers=headers,
-            params=params
-        )
-
-        try:
-            response_json: AccessTokenResponse = response.json()
-            return response_json['access_token']
-        except:
-            raise ValueError(response.text)
 
     def __call__(
         self: 'ERNIEBot',
@@ -77,7 +79,7 @@ class ERNIEBot:
             'Content-Type': 'application/json'
         }
 
-        params: ChatParams = {
+        params: Params = {
             'access_token': self.access_token
         }
 
@@ -128,13 +130,66 @@ class ERNIEBot:
                     raise ValueError(response_line)
 
 
+class ERNIEEmbedding:
+    EmbeddingV1 = 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/embeddings/embedding-v1'
+
+    def __init__(
+        self: 'ERNIEEmbedding',
+        api_key: str,
+        secret_key: str,
+        url: str = EmbeddingV1
+    ) -> None:
+        self.url = url
+        self.access_token = get_access_token(
+            api_key=api_key,
+            secret_key=secret_key
+        )
+
+    def __call__(
+        self: 'ERNIEEmbedding',
+        texts: Texts,
+        user_id: Optional[str] = None
+    ) -> Embeddings:
+        headers: Headers = {
+            'Content-Type': 'application/json'
+        }
+
+        params: Params = {
+            'access_token': self.access_token
+        }
+
+        data: EmbeddingData = {
+            'input': texts,
+            'user_id': user_id
+        }
+
+        response = requests.request(
+            method="POST",
+            url=self.url,
+            headers=headers,
+            params=params,
+            data=json.dumps(data)
+        )
+
+        try:
+            response_json: EmbeddingResponse = response.json()
+            embeddings: Embeddings = [
+                embedding['embedding']
+                for embedding in response_json['data']
+            ]
+            return embeddings
+        except:
+            raise ValueError(response.text)
+
+
 if __name__ == "__main__":
     api_key = ''
     secret_key = ''
 
     erniebot = ERNIEBot(
         api_key=api_key,
-        secret_key=secret_key
+        secret_key=secret_key,
+        url=ERNIEBot.ERNIEBot
     )
 
     message = Message(
@@ -167,3 +222,22 @@ if __name__ == "__main__":
 
     for item in response_stream:
         print(item, end='')
+
+    ernieembedding = ERNIEEmbedding(
+        api_key=api_key,
+        secret_key=secret_key,
+        url=ERNIEEmbedding.EmbeddingV1
+    )
+
+    texts: Texts = [
+        '你好！',
+        '你好吗？',
+        '你是谁？'
+    ]
+
+    response = ernieembedding(
+        texts=texts,
+        user_id=None
+    )
+
+    print(response)

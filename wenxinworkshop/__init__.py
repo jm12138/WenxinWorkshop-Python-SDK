@@ -1,14 +1,20 @@
-from .types import Messages
+from .types import Texts, Messages, Embedding, Embeddings
+
 from .types import Message, Headers
-from .types import ChatParams, ChatData, ChatResponse
+from .types import Params
+from .types import ChatUsage, ChatData, ChatResponse
+from .types import EmbeddingUsage, EmbeddingData, EmbeddingResponse, EmbeddingObject
 from .types import AccessTokenParams, AccessTokenResponse
-from .erniebot import ERNIEBot
+from .erniebot import ERNIEBot, ERNIEEmbedding, get_access_token
 
 
 __all__ = [
-    'ERNIEBot',
-    'Headers',
+    'Texts',
+    'Headers', 'Params',
     'Message', 'Messages',
-    'ChatParams', 'ChatData', 'ChatResponse',
-    'AccessTokenParams', 'AccessTokenResponse'
+    'Embedding', 'Embeddings',
+    'ChatData', 'ChatResponse', 'ChatUsage',
+    'AccessTokenParams', 'AccessTokenResponse',
+    'EmbeddingData', 'EmbeddingResponse', 'EmbeddingUsage', 'EmbeddingObject',
+    'ERNIEBot', 'ERNIEEmbedding', 'get_access_token'
 ]
