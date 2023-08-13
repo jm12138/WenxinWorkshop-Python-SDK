@@ -9,6 +9,7 @@ __all__ = [
     'Embedding', 'Embeddings',
     'ChatData', 'ChatResponse', 'ChatUsage',
     'AccessTokenParams', 'AccessTokenResponse',
+    'PromptTemplateParams', 'PromptTemplateResult', 'PromptTemplateResponse',
     'EmbeddingData', 'EmbeddingResponse', 'EmbeddingUsage', 'EmbeddingObject'
 ]
 
@@ -87,6 +88,24 @@ class AccessTokenResponse(TypedDict):
     access_token: str
     scope: str
     Messages_secret: str
+
+
+class PromptTemplateParams(TypedDict):
+    access_token: str
+    id: int
+
+
+class PromptTemplateResult(TypedDict):
+    templateId: str
+    templateName: str
+    templateContent: str
+    templateVariables: str
+    content: str
+
+
+class PromptTemplateResponse(TypedDict):
+    log_id: int
+    result: PromptTemplateResult
 
 
 class Headers(TypedDict):

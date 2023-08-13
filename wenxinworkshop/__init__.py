@@ -1,11 +1,12 @@
 from .types import Texts, Messages, Embedding, Embeddings
 
-from .types import Message, Headers
 from .types import Params
+from .types import Message, Headers
 from .types import ChatUsage, ChatData, ChatResponse
-from .types import EmbeddingUsage, EmbeddingData, EmbeddingResponse, EmbeddingObject
 from .types import AccessTokenParams, AccessTokenResponse
-from .erniebot import ERNIEBot, ERNIEEmbedding, get_access_token
+from .types import EmbeddingUsage, EmbeddingData, EmbeddingResponse, EmbeddingObject
+
+from .apis import LLMAPI, EmbeddingAPI, PromptTemplateAPI, get_access_token
 
 
 __all__ = [
@@ -15,6 +16,7 @@ __all__ = [
     'Embedding', 'Embeddings',
     'ChatData', 'ChatResponse', 'ChatUsage',
     'AccessTokenParams', 'AccessTokenResponse',
+    'PromptTemplateParams', 'PromptTemplateResult', 'PromptTemplateResponse',
     'EmbeddingData', 'EmbeddingResponse', 'EmbeddingUsage', 'EmbeddingObject',
-    'ERNIEBot', 'ERNIEEmbedding', 'get_access_token'
+    'LLMAPI', 'EmbeddingAPI', 'PromptTemplateAPI', 'get_access_token'
 ]

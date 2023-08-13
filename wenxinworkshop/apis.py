@@ -10,9 +10,10 @@ from .types import Headers, Params
 from .types import ChatData, ChatResponse
 from .types import EmbeddingData, EmbeddingResponse
 from .types import AccessTokenParams, AccessTokenResponse
+from .types import PromptTemplateParams, PromptTemplateResponse
 
 
-__all__ = ['ERNIEBot', 'ERNIEEmbedding', 'get_access_token']
+__all__ = ['LLMAPI', 'EmbeddingAPI', 'PromptTemplateAPI', 'get_access_token']
 
 
 def get_access_token(
@@ -49,12 +50,12 @@ def get_access_token(
         raise ValueError(response.text)
 
 
-class ERNIEBot:
+class LLMAPI:
     ERNIEBot = 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions'
     ERNIEBot_turbo = 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/eb-instant'
 
     def __init__(
-        self: 'ERNIEBot',
+        self: 'LLMAPI',
         api_key: str,
         secret_key: str,
         url: str = ERNIEBot
@@ -66,7 +67,7 @@ class ERNIEBot:
         )
 
     def __call__(
-        self: 'ERNIEBot',
+        self: 'LLMAPI',
         messages: Messages,
         temperature: Optional[float] = None,
         top_p: Optional[float] = None,
@@ -130,11 +131,11 @@ class ERNIEBot:
                     raise ValueError(response_line)
 
 
-class ERNIEEmbedding:
+class EmbeddingAPI:
     EmbeddingV1 = 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/embeddings/embedding-v1'
 
     def __init__(
-        self: 'ERNIEEmbedding',
+        self: 'EmbeddingAPI',
         api_key: str,
         secret_key: str,
         url: str = EmbeddingV1
@@ -146,7 +147,7 @@ class ERNIEEmbedding:
         )
 
     def __call__(
-        self: 'ERNIEEmbedding',
+        self: 'EmbeddingAPI',
         texts: Texts,
         user_id: Optional[str] = None
     ) -> Embeddings:
@@ -182,14 +183,56 @@ class ERNIEEmbedding:
             raise ValueError(response.text)
 
 
+class PromptTemplateAPI:
+    PromptTemplate = 'https://aip.baidubce.com/rest/2.0/wenxinworkshop/api/v1/template/info'
+
+    def __init__(
+        self: 'PromptTemplateAPI',
+        api_key: str,
+        secret_key: str,
+        url: str = PromptTemplate
+    ) -> None:
+        self.url = url
+        self.access_token = get_access_token(
+            api_key=api_key,
+            secret_key=secret_key
+        )
+
+    def __call__(self, id: int, **kwargs: str) -> str:
+        headers: Headers = {
+            'Content-Type': 'application/json'
+        }
+
+        params: PromptTemplateParams = {
+            'access_token': self.access_token,
+            'id': id
+        }
+
+        response = requests.request(
+            method="GET",
+            url=self.url,
+            headers=headers,
+            params={
+                **params,
+                **kwargs
+            }
+        )
+
+        try:
+            response_json: PromptTemplateResponse = response.json()
+            return response_json['result']['content']
+        except:
+            raise ValueError(response.text)
+
+
 if __name__ == "__main__":
     api_key = ''
     secret_key = ''
 
-    erniebot = ERNIEBot(
+    erniebot = LLMAPI(
         api_key=api_key,
         secret_key=secret_key,
-        url=ERNIEBot.ERNIEBot
+        url=LLMAPI.ERNIEBot
     )
 
     message = Message(
@@ -223,10 +266,10 @@ if __name__ == "__main__":
     for item in response_stream:
         print(item, end='')
 
-    ernieembedding = ERNIEEmbedding(
+    ernieembedding = EmbeddingAPI(
         api_key=api_key,
         secret_key=secret_key,
-        url=ERNIEEmbedding.EmbeddingV1
+        url=EmbeddingAPI.EmbeddingV1
     )
 
     texts: Texts = [
@@ -238,6 +281,19 @@ if __name__ == "__main__":
     response = ernieembedding(
         texts=texts,
         user_id=None
+    )
+
+    print(response)
+
+    prompttemplate = PromptTemplateAPI(
+        api_key=api_key,
+        secret_key=secret_key,
+        url=PromptTemplateAPI.PromptTemplate
+    )
+
+    response = prompttemplate(
+        id=3468,
+        content='侏罗纪世界'
     )
 
     print(response)
