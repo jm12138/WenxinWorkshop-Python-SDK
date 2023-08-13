@@ -1,5 +1,5 @@
-# wenxinworkshop
-* A third-party Python SDK for a WenXinWorkshop.
+# WenxinWorkshop Python SDK
+* A third-party Python SDK for a WenxinWorkshop.
 
 ## Quick Start
 * Install wenxinworkshop SDK
