@@ -10,7 +10,7 @@ from .apis import LLMAPI, EmbeddingAPI, PromptTemplateAPI, get_access_token
 
 
 __all__ = [
-    'version',
+    '__version__',
     'Texts',
     'Headers', 'Params',
     'Message', 'Messages',
