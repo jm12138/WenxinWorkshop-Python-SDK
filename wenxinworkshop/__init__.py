@@ -10,6 +10,7 @@ from .apis import LLMAPI, EmbeddingAPI, PromptTemplateAPI, get_access_token
 
 
 __all__ = [
+    'version',
     'Texts',
     'Headers', 'Params',
     'Message', 'Messages',
@@ -20,3 +21,6 @@ __all__ = [
     'EmbeddingData', 'EmbeddingResponse', 'EmbeddingUsage', 'EmbeddingObject',
     'LLMAPI', 'EmbeddingAPI', 'PromptTemplateAPI', 'get_access_token'
 ]
+
+
+__version__ = '0.1.0'
