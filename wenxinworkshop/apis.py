@@ -115,13 +115,13 @@ class LLMAPI:
         penalty_score: Optional[float] = None,
         stream: Optional[bool] = None,
         user_id: Optional[str] = None,
-        chunk_size: Optional[int] = 512
+        chunk_size: int = 512
     ) -> Union[str, Generator[str, None, None]]:
         Get response from LLM API.
 
     stream_response(
         response: requests.Response,
-        chunk_size: Optional[int] = 512
+        chunk_size: int = 512
     ) -> Generator[str, None, None]:
         Stream response from LLM API.
 
@@ -203,7 +203,7 @@ class LLMAPI:
         penalty_score: Optional[float] = None,
         stream: Optional[bool] = None,
         user_id: Optional[str] = None,
-        chunk_size: Optional[int] = 512
+        chunk_size: int = 512
     ) -> Union[str, Generator[str, None, None]]:
         '''
         Get response from LLM API.
@@ -228,7 +228,7 @@ class LLMAPI:
         user_id : Optional[str], optional
             User ID of LLM API, by default None.
 
-        chunk_size : Optional[int], optional
+        chunk_size : int, optional
             Chunk size of LLM API, by default 512.
 
         Returns
@@ -317,7 +317,7 @@ class LLMAPI:
     @staticmethod
     def stream_response(
         response: requests.Response,
-        chunk_size: Optional[int] = 512
+        chunk_size: int = 512
     ) -> Generator[str, None, None]:
         '''
         Stream response from LLM API.
@@ -327,7 +327,7 @@ class LLMAPI:
         response : requests.Response
             Response from LLM API.
 
-        chunk_size : Optional[int], optional
+        chunk_size : int, optional
             Chunk size of LLM API, by default 512.
 
         Yields
