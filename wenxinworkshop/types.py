@@ -82,7 +82,7 @@ class ChatResponse(TypedDict):
     id : str
         ID of the response.
 
-    object : str
+    object : Literal['chat.completion']
         Object of the response.
 
     created : int
