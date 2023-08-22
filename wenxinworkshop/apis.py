@@ -1,6 +1,7 @@
 import json
 import requests
 
+from typing import Dict
 from typing import Optional, Generator, Union
 
 from .types import Messages, Embeddings, Texts
@@ -102,7 +103,7 @@ class LLMAPI:
         self,
         api_key: str,
         secret_key: str,
-        url: Optional[str] = LLMAPI.ERNIEBot
+        url: str = LLMAPI.ERNIEBot
     ) -> None:
         Initialize LLM API.
 
@@ -161,7 +162,7 @@ class LLMAPI:
         self: 'LLMAPI',
         api_key: str,
         secret_key: str,
-        url: Optional[str] = ERNIEBot
+        url: str = ERNIEBot
     ) -> None:
         '''
         Initialize LLM API.
@@ -352,7 +353,7 @@ class LLMAPI:
         '''
         for response_line in response.iter_lines(
             chunk_size=chunk_size,
-            decode_unicode='UTF-8'
+            decode_unicode=True
         ):
             if response_line:
                 try:
@@ -383,7 +384,7 @@ class EmbeddingAPI:
         self,
         api_key: str,
         secret_key: str,
-        url: Optional[str] = EmbeddingAPI.EmbeddingV1
+        url: str = EmbeddingAPI.EmbeddingV1
     ) -> None:
         Initialize Embedding API.
 
@@ -425,7 +426,7 @@ class EmbeddingAPI:
         self: 'EmbeddingAPI',
         api_key: str,
         secret_key: str,
-        url: Optional[str] = EmbeddingV1
+        url: str = EmbeddingV1
     ) -> None:
         '''
         Initialize Embedding API.
@@ -553,7 +554,7 @@ class PromptTemplateAPI:
         self,   
         api_key: str,
         secret_key: str,
-        url: Optional[str] = PromptTemplate
+        url: str = PromptTemplate
     ) -> None:
         Initialize Prompt Template API.
 
@@ -589,7 +590,7 @@ class PromptTemplateAPI:
         self: 'PromptTemplateAPI',
         api_key: str,
         secret_key: str,
-        url: Optional[str] = PromptTemplate
+        url: str = PromptTemplate
     ) -> None:
         '''
         Initialize Prompt Template API.
@@ -658,7 +659,7 @@ class PromptTemplateAPI:
             'Content-Type': 'application/json'
         }
 
-        params = {
+        params: Dict[str, Union[str, int]] = {
             'access_token': self.access_token,
             'id': template_id,
             **kwargs
