@@ -6,11 +6,10 @@ from typing import Optional, Generator, Union
 from .types import Messages, Embeddings, Texts
 
 from .types import Message
-from .types import Headers, Params
-from .types import ChatData, ChatResponse
-from .types import EmbeddingData, EmbeddingResponse
-from .types import AccessTokenParams, AccessTokenResponse
-from .types import PromptTemplateParams, PromptTemplateResponse
+from .types import ChatResponse
+from .types import EmbeddingResponse
+from .types import AccessTokenResponse
+from .types import PromptTemplateResponse
 
 
 __all__ = ['LLMAPI', 'EmbeddingAPI', 'PromptTemplateAPI', 'get_access_token']
@@ -54,18 +53,18 @@ def get_access_token(
     '''
     url = "https://aip.baidubce.com/oauth/2.0/token"
 
-    headers: Headers = {
+    headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
 
-    params: AccessTokenParams = {
+    params = {
         'grant_type': 'client_credentials',
         'client_id': api_key,
         'client_secret': secret_key
     }
 
-    response: requests.Response = requests.request(
+    response = requests.request(
         method="POST",
         url=url,
         headers=headers,
@@ -276,15 +275,15 @@ class LLMAPI:
         ...     print(item, end='')
         你好，有什么可以帮助你的。
         '''
-        headers: Headers = {
+        headers = {
             'Content-Type': 'application/json'
         }
 
-        params: Params = {
+        params = {
             'access_token': self.access_token
         }
 
-        data: ChatData = {
+        data = {
             'messages': messages,
             'temperature': temperature,
             'top_p': top_p,
@@ -501,15 +500,15 @@ class EmbeddingAPI:
         >>> print(response)
         [[0.123, 0.456, 0.789, ...], [0.123, 0.456, 0.789, ...], [0.123, 0.456, 0.789, ...]]
         '''
-        headers: Headers = {
+        headers = {
             'Content-Type': 'application/json'
         }
 
-        params: Params = {
+        params = {
             'access_token': self.access_token
         }
 
-        data: EmbeddingData = {
+        data = {
             'input': texts,
             'user_id': user_id
         }
@@ -655,23 +654,21 @@ class PromptTemplateAPI:
         >>> print(response)
 
         '''
-        headers: Headers = {
+        headers = {
             'Content-Type': 'application/json'
         }
 
-        params: PromptTemplateParams = {
+        params = {
             'access_token': self.access_token,
-            'id': template_id
+            'id': template_id,
+            **kwargs
         }
 
         response = requests.request(
             method="GET",
             url=self.url,
             headers=headers,
-            params={
-                **params,
-                **kwargs
-            }
+            params=params
         )
 
         try:
@@ -755,13 +752,13 @@ if __name__ == "__main__":
     ]
 
     # get embeddings from Embedding API
-    response = ernieembedding(
+    embeddings = ernieembedding(
         texts=texts,
         user_id=None
     )
 
     # print embeddings
-    print(response)
+    print(embeddings)
 
     '''
     Prompt Template API Examples
@@ -774,10 +771,10 @@ if __name__ == "__main__":
     )
 
     # get prompt template from Prompt Template API
-    response = prompttemplate(
+    template = prompttemplate(
         template_id=1968,
         content='侏罗纪世界'
     )
 
     # print prompt template
-    print(response)
+    print(template)

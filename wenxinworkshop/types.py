@@ -1,16 +1,15 @@
 from typing import List
-from typing import TypedDict, Literal, Optional
+from typing import TypedDict, Literal
 
 
 __all__ = [
     'Texts',
-    'Headers', 'Params',
     'Message', 'Messages',
     'Embedding', 'Embeddings',
-    'ChatData', 'ChatResponse', 'ChatUsage',
-    'AccessTokenParams', 'AccessTokenResponse',
-    'PromptTemplateParams', 'PromptTemplateResult', 'PromptTemplateResponse',
-    'EmbeddingData', 'EmbeddingResponse', 'EmbeddingUsage', 'EmbeddingObject'
+    'ChatResponse', 'ChatUsage',
+    'AccessTokenResponse',
+    'PromptTemplateResult', 'PromptTemplateResponse',
+    'EmbeddingResponse', 'EmbeddingUsage', 'EmbeddingObject'
 ]
 
 
@@ -39,89 +38,6 @@ class Message(TypedDict):
     '''
     role: Literal['user', 'assistant']
     content: str
-
-
-class Params(TypedDict):
-    '''
-    Params object for APIs.
-
-    Attributes
-    ----------
-    access_token : str
-        Access token for APIs.
-
-    Examples
-    --------
-    >>> Params(
-    ...     access_token='...'
-    ... )
-    {
-        'access_token': '...'
-    }
-    '''
-
-    access_token: str
-
-
-class ChatData(TypedDict):
-    '''
-    Chat API data object.
-
-    Attributes
-    ----------
-    messages : Messages
-        Messages to chat.
-
-    temperature : Optional[float]
-        Temperature of the chat.
-
-    top_p : Optional[float]
-        Top p of the chat.
-
-    penalty_score : Optional[float] 
-        Penalty score of the chat.
-
-    stream : Optional[bool]
-        Whether to stream the response.
-
-    user_id : Optional[str]
-        User ID of the chat.
-
-    Examples
-    --------
-    >>> ChatData(
-    ...     messages=[
-    ...         Message(
-    ...             role='user',
-    ...             content='你好！'
-    ...         )
-    ...     ],
-    ...     temperature=0.8,
-    ...     top_p=0.9,
-    ...     penalty_score=1.0,
-    ...     stream=False,
-    ...     user_id='...'
-    ... )
-    {
-        'messages': [
-            {
-                'role': 'user',
-                'content': '你好！'
-            }
-        ],  
-        'temperature': 0.8,
-        'top_p': 0.9,
-        'penalty_score': 1.0,
-        'stream': False,
-        'user_id': '...'
-    }
-    '''
-    messages: 'Messages'
-    temperature: Optional[float]
-    top_p: Optional[float]
-    penalty_score: Optional[float]
-    stream: Optional[bool]
-    user_id: Optional[str]
 
 
 class ChatUsage(TypedDict):
@@ -238,37 +154,6 @@ class ChatResponse(TypedDict):
     need_clear_history: bool
     ban_round: int
     usage: ChatUsage
-
-
-class EmbeddingData(TypedDict):
-    '''
-    Embedding API data object.
-
-    Attributes
-    ----------
-    texts : List[str]
-        Texts to embed.
-
-    user_id : Optional[str]
-        User ID of the embedding.
-
-    Examples
-    --------
-    >>> EmbeddingData(
-    ...     texts=[
-    ...         '你好！'
-    ...     ],
-    ...     user_id='...'
-    ... )
-    {
-        'texts': [
-            '你好！'
-        ],
-        'user_id': '...'
-    }
-    '''
-    input: List[str]
-    user_id: Optional[str]
 
 
 class EmbeddingObject(TypedDict):
@@ -412,39 +297,6 @@ class EmbeddingResponse(TypedDict):
     usage: EmbeddingUsage
 
 
-class AccessTokenParams(TypedDict):
-    '''
-    Access token params object.
-
-    Attributes
-    ----------
-    grant_type : str
-        Grant type of the access token.
-
-    client_id : str
-        Client ID of the access token.
-
-    client_secret : str
-        Client secret of the access token.
-
-    Examples
-    --------
-    >>> AccessTokenParams(
-    ...     grant_type='...',
-    ...     client_id='...',
-    ...     client_secret='...'
-    ... )
-    {
-        'grant_type': '...',
-        'client_id': '...',
-        'client_secret': '...'
-    }
-    '''
-    grant_type: str
-    client_id: str
-    client_secret: str
-
-
 class AccessTokenResponse(TypedDict):
     '''
     Access token response object.
@@ -494,33 +346,6 @@ class AccessTokenResponse(TypedDict):
     access_token: str
     scope: str
     session_secret: str
-
-
-class PromptTemplateParams(TypedDict):
-    '''
-    Prompt template params object.
-
-    Attributes
-    ----------  
-    access_token : str
-        Access token of the prompt template.
-
-    id : int
-        ID of the prompt template.
-
-    Examples
-    --------
-    >>> PromptTemplateParams(
-    ...     access_token='...',
-    ...     id=0
-    ... )
-    {
-        'access_token': '...',
-        'id': 0
-    }
-    '''
-    access_token: str
-    id: int
 
 
 class PromptTemplateResult(TypedDict):
@@ -605,33 +430,6 @@ class PromptTemplateResponse(TypedDict):
     '''
     log_id: int
     result: PromptTemplateResult
-
-
-class Headers(TypedDict):
-    '''
-    Headers object.
-
-    Attributes
-    ----------
-    Content_Type : str
-        Content type of the headers.
-
-    Accept : Optional[str]
-        Accept of the headers.
-
-    Examples
-    --------
-    >>> Headers(
-    ...     Content_Type='...',
-    ...     Accept='...'
-    ... )
-    {
-        'Content_Type': '...',  
-        'Accept': '...'
-    }
-    '''
-    Content_Type: str
-    Accept: Optional[str]
 
 
 '''
