@@ -113,7 +113,7 @@ class ChatResponse(TypedDict):
     --------
     >>> ChatResponse(
     ...     id='...',
-    ...     object='...',
+    ...     object='chat.completion',
     ...     created=0,
     ...     sentence_id=0,
     ...     is_end=False,
@@ -129,7 +129,7 @@ class ChatResponse(TypedDict):
     ... )
     {
         'id': '...',
-        'object': '...',
+        'object': 'chat.completion',
         'created': 0,
         'sentence_id': 0,
         'is_end': False,
@@ -145,7 +145,7 @@ class ChatResponse(TypedDict):
     }
     '''
     id: str
-    object: str
+    object: Literal['chat.completion']
     created: int
     sentence_id: int
     is_end: bool
