@@ -16,10 +16,10 @@ from .types import AIStudioEmbeddingResponse
 
 
 __all__ = [
+    "get_access_token",
     "LLMAPI",
     "EmbeddingAPI",
     "PromptTemplateAPI",
-    "get_access_token",
     "AIStudioLLMAPI",
     "AIStudioEmbeddingAPI",
 ]

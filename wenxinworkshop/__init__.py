@@ -5,7 +5,9 @@ from .types import ChatUsage, ChatResponse
 from .types import AccessTokenResponse
 from .types import EmbeddingUsage, EmbeddingResponse, EmbeddingObject
 from .types import PromptTemplateResult, PromptTemplateResponse
-from .types import AIStudioChatResponse, AIStudioEmbeddingResponse
+from .types import AIStudioChatUsage, AIStudioChatResult, AIStudioChatResponse
+from .types import AIStudioEmbeddingObject, AIStudioEmbeddingUsage
+from .types import AIStudioEmbeddingResult, AIStudioEmbeddingResponse
 
 from .apis import get_access_token
 from .apis import LLMAPI, EmbeddingAPI, PromptTemplateAPI
@@ -27,7 +29,12 @@ __all__ = [
     "EmbeddingResponse",
     "EmbeddingUsage",
     "EmbeddingObject",
+    "AIStudioChatUsage",
+    "AIStudioChatResult",
     "AIStudioChatResponse",
+    "AIStudioEmbeddingObject",
+    "AIStudioEmbeddingUsage",
+    "AIStudioEmbeddingResult",
     "AIStudioEmbeddingResponse",
     "get_access_token",
     "LLMAPI",
