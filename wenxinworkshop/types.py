@@ -16,7 +16,19 @@ __all__ = [
     "EmbeddingResponse",
     "EmbeddingUsage",
     "EmbeddingObject",
+    "AIStudioChatUsage",
+    "AIStudioChatResult",
+    "AIStudioChatResponse",
+    "AIStudioEmbeddingObject",
+    "AIStudioEmbeddingUsage",
+    "AIStudioEmbeddingResult",
+    "AIStudioEmbeddingResponse",
 ]
+
+
+"""
+Type definitions of Wenxin Workshop.
+"""
 
 
 class Message(TypedDict):
@@ -30,17 +42,6 @@ class Message(TypedDict):
 
     content : str
         Content of the message.
-
-    Examples
-    --------
-    >>> Message(
-    ...     role='user',
-    ...     content='你好！'
-    ... )
-    {
-        'role': 'user',
-        'content': '你好！'
-    }
     """
 
     role: Literal["user", "assistant"]
@@ -61,19 +62,6 @@ class ChatUsage(TypedDict):
 
     total_tokens : int
         Total tokens of the chat.
-
-    Examples
-    --------
-    >>> ChatUsage(
-    ...     prompt_tokens=0,
-    ...     completion_tokens=0,
-    ...     total_tokens=0
-    ... )
-    {
-        'prompt_tokens': 0,
-        'completion_tokens': 0,
-        'total_tokens': 0
-    }
     """
 
     prompt_tokens: int
@@ -116,41 +104,6 @@ class ChatResponse(TypedDict):
 
     usage : ChatUsage
         Usage of the response.
-
-    Examples
-    --------
-    >>> ChatResponse(
-    ...     id='...',
-    ...     object='chat.completion',
-    ...     created=0,
-    ...     sentence_id=0,
-    ...     is_end=False,
-    ...     is_truncated=False,
-    ...     result='...',
-    ...     need_clear_history=False,
-    ...     ban_round=0,
-    ...     usage=ChatUsage(
-    ...         prompt_tokens=0,
-    ...         completion_tokens=0,
-    ...         total_tokens=0
-    ...     )
-    ... )
-    {
-        'id': '...',
-        'object': 'chat.completion',
-        'created': 0,
-        'sentence_id': 0,
-        'is_end': False,
-        'is_truncated': False,
-        'result': '...',
-        'need_clear_history': False,
-        'ban_round': 0,
-        'usage': {
-            'prompt_tokens': 0,
-            'completion_tokens': 0,
-            'total_tokens': 0
-        }
-    }
     """
 
     id: str
@@ -179,29 +132,6 @@ class EmbeddingObject(TypedDict):
 
     index : int
         Index of the embedding.
-
-    Examples
-    --------
-    >>> EmbeddingObject(
-    ...     object='embedding',
-    ...     embedding=[
-    ...         0.0,
-    ...         0.0,
-    ...         0.0,
-    ...         ...
-    ...     ],
-    ...     index=0
-    ... )
-    {
-        'object': 'embedding',
-        'embedding': [
-            0.0,
-            0.0,
-            0.0,
-            ...
-        ],
-        'index': 0
-    }
     """
 
     object: Literal["embedding"]
@@ -220,17 +150,6 @@ class EmbeddingUsage(TypedDict):
 
     total_tokens : int
         Total tokens of the embedding.
-
-    Examples
-    --------
-    >>> EmbeddingUsage(
-    ...     prompt_tokens=0,
-    ...     total_tokens=0
-    ... )
-    {
-        'prompt_tokens': 0,
-        'total_tokens': 0
-    }
     """
 
     prompt_tokens: int
@@ -255,51 +174,6 @@ class EmbeddingResponse(TypedDict):
     data : List[EmbeddingObject]
 
     usage : EmbeddingUsage
-
-    Examples
-    --------
-    >>> EmbeddingResponse(
-    ...     id='...',
-    ...     object='embedding_list',
-    ...     created=0,
-    ...     data=[
-    ...         EmbeddingObject(
-    ...             object='embedding',
-    ...             embedding=[
-    ...                 0.0,
-    ...                 0.0,
-    ...                 0.0,
-    ...                 ...
-    ...             ],
-    ...             index=0
-    ...         )
-    ...     ],
-    ...     usage=EmbeddingUsage(
-    ...         prompt_tokens=0,
-    ...         total_tokens=0
-    ...     )
-    ... )
-    {
-        'id': '...',
-        'object': 'embedding_list',
-        'created': 0,
-        'data': [
-            {
-                'object': 'embedding',
-                'embedding': [
-                    0.0,
-                    0.0,
-                    0.0,
-                    ...
-                ],
-                'index': 0
-            }
-        ],
-        'usage': {
-            'prompt_tokens': 0,
-            'total_tokens': 0
-        }
-    }
     """
 
     id: str
@@ -332,25 +206,6 @@ class AccessTokenResponse(TypedDict):
 
     session_secret : str
         Session secret of the access token.
-
-    Examples
-    --------
-    >>> AccessTokenResponse(
-    ...     refresh_token='...',
-    ...     expires_in=0,
-    ...     session_key='...',
-    ...     access_token='...',
-    ...     scope='...',
-    ...     session_secret='...'
-    ... )
-    {
-        'refresh_token': '...',
-        'expires_in': 0,
-        'seesion_key': '...',
-        'access_token': '...',
-        'scope': '...',
-        'session_secret': '...'
-    }
     """
 
     refresh_token: str
@@ -381,23 +236,6 @@ class PromptTemplateResult(TypedDict):
 
     content : str
         Content of the prompt template.
-
-    Examples
-    --------
-    >>> PromptTemplateResult(
-    ...     templateId='...',
-    ...     templateName='...',
-    ...     templateContent='...',
-    ...     templateVariables='...',
-    ...     content='...'
-    ... )
-    {
-        'templateId': '...',
-        'templateName': '...',
-        'templateContent': '...',
-        'templateVariables': '...',
-        'content': '...'
-    }
     """
 
     templateId: str
@@ -418,33 +256,186 @@ class PromptTemplateResponse(TypedDict):
 
     result : PromptTemplateResult
         Result of the prompt template.
-
-    Examples
-    --------
-    >>> PromptTemplateResponse(
-    ...     log_id=0,
-    ...     result=PromptTemplateResult(
-    ...         templateId='...',
-    ...         templateName='...',
-    ...         templateContent='...',
-    ...         templateVariables='...',
-    ...         content='...'
-    ...     )
-    ... )
-    {
-        'log_id': 0,
-        'result': {
-            'templateId': '...',
-            'templateName': '...',
-            'templateContent': '...',
-            'templateVariables': '...',
-            'content': '...'
-        }
-    }
     """
 
     log_id: int
     result: PromptTemplateResult
+
+
+"""
+Type definitions of AI Studio.
+"""
+
+
+class AIStudioChatUsage(TypedDict):
+    """
+    AIStudio Chat API usage object.
+
+    Attributes
+    ----------
+    prompt_tokens : int
+        Prompt tokens of the chat.
+
+    completion_tokens : int
+        Completion tokens of the chat.
+
+    total_tokens : int
+        Total tokens of the chat.
+    """
+
+    prompt_tokens: int
+    completion_tokens: int
+    total_tokens: int
+
+
+class AIStudioChatResult(TypedDict):
+    """
+    AI Studio Chat API result object.
+
+    Attributes
+    ----------
+    id : str
+        ID of the chat.
+
+    object : str
+        Object of the chat.
+
+    created : int
+        Created time of the chat.
+
+    result : str
+        Result of the chat.
+
+    need_clear_history : bool
+        Whether the chat need clear history.
+
+    usage : ChatUsage
+        Usage of the chat.
+    """
+
+    id: str
+    object: Literal["chat.completion"]
+    created: int
+    result: str
+    need_clear_history: bool
+    usage: AIStudioChatUsage
+
+
+class AIStudioChatResponse(TypedDict):
+    """
+    AI Studio Chat API response object.
+
+    Attributes
+    ----------
+    logId : str
+        Log ID of the chat.
+
+    errorCode : int
+        Error code of the chat.
+
+    errorMsg : str
+        Error message of the chat.
+
+    result : AIStudioChatResult
+        Result of the chat.
+    """
+
+    logId: str
+    errorCode: int
+    errorMsg: str
+    result: AIStudioChatResult
+
+
+class AIStudioEmbeddingObject(TypedDict):
+    """
+    AI Studio Embedding API object object.
+
+    Attributes
+    ----------
+    object : Literal['embedding']
+        Object of the embedding.
+
+    embedding : Embedding
+        Embedding of the embedding.
+
+    index : int
+        Index of the embedding.
+    """
+
+    object: Literal["embedding"]
+    embedding: "Embedding"
+    index: int
+
+
+class AIStudioEmbeddingUsage(TypedDict):
+    """
+    AI Studio Embedding API usage object.
+
+    Attributes
+    ----------
+    prompt_tokens : int
+        Prompt tokens of the embedding.
+
+    total_tokens : int
+        Total tokens of the embedding.
+    """
+
+    prompt_tokens: int
+    total_tokens: int
+
+
+class AIStudioEmbeddingResult(TypedDict):
+    """
+    AI Studio Embedding API result object.
+
+    Attributes
+    ----------
+    id : str
+        ID of the embedding.
+
+    object : Literal['embedding_list']
+        Object of the embedding.
+
+    created : int
+        Created time of the embedding.
+
+    data : List[EmbeddingObject]
+        Data of the embedding.
+
+    usage : EmbeddingUsage
+        Usage of the embedding.
+    """
+
+    id: str
+    object: Literal["embedding_list"]
+    created: int
+    data: List[EmbeddingObject]
+    usage: AIStudioEmbeddingUsage
+
+
+class AIStudioEmbeddingResponse(TypedDict):
+    """
+    AI Studio Embedding API response object.
+
+    Attributes
+    ----------
+    logId : str
+        Log ID of the embedding.
+
+    errorCode : int
+        Error code of the embedding.
+
+    errorMsg : str
+        Error message of the embedding.
+
+    result : AIStudioEmbeddingResult
+        Result of the embedding.
+    """
+
+    logId: str
+    errorCode: int
+    errorMsg: str
+    result: AIStudioEmbeddingResult
 
 
 """

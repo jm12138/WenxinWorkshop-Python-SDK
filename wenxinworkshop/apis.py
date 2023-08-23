@@ -11,9 +11,23 @@ from .types import ChatResponse
 from .types import EmbeddingResponse
 from .types import AccessTokenResponse
 from .types import PromptTemplateResponse
+from .types import AIStudioChatResponse
+from .types import AIStudioEmbeddingResponse
 
 
-__all__ = ["LLMAPI", "EmbeddingAPI", "PromptTemplateAPI", "get_access_token"]
+__all__ = [
+    "LLMAPI",
+    "EmbeddingAPI",
+    "PromptTemplateAPI",
+    "get_access_token",
+    "AIStudioLLMAPI",
+    "AIStudioEmbeddingAPI",
+]
+
+
+"""
+APIs of Wenxin Workshop.
+"""
 
 
 def get_access_token(api_key: str, secret_key: str) -> str:
@@ -113,36 +127,6 @@ class LLMAPI:
         chunk_size: int = 512
     ) -> Generator[str, None, None]:
         Stream response from LLM API.
-
-    Examples
-    --------
-    >>> from wenxinworkshop import LLMAPI
-    >>> api_key = ''
-    >>> secret_key = ''
-    >>> erniebot = LLMAPI(
-    ...     api_key=api_key,
-    ...     secret_key=secret_key,
-    ...     url=LLMAPI.ERNIEBot
-    ... )
-
-    >>> message = Message(
-    ...     role='user',
-    ...     content='你好！'
-    ... )
-    >>> messages: Messages = [message]
-
-    >>> response = erniebot(
-    ...     messages=messages,
-    ...     temperature=None,
-    ...     top_p=None,
-    ...     penalty_score=None,
-    ...     stream=None,
-    ...     user_id=None,
-    ...     chunk_size=512
-    ... )
-
-    >>> print(response)
-    你好，有什么可以帮助你的。
     """
 
     ERNIEBot = (
@@ -373,31 +357,6 @@ class EmbeddingAPI:
         user_id: Optional[str] = None
     ) -> Embeddings:
         Get embeddings from Embedding API.
-
-    Examples
-    --------
-    >>> from wenxinworkshop import EmbeddingAPI
-    >>> api_key = ''
-    >>> secret_key = ''
-    >>> ernieembedding = EmbeddingAPI(
-    ...     api_key=api_key,
-    ...     secret_key=secret_key,
-    ...     url=EmbeddingAPI.EmbeddingV1
-    ... )
-
-    >>> texts: Texts = [
-    ...     '你好！',
-    ...     '你好吗？',
-    ...     '你是谁？'
-    ... ]
-
-    >>> response = ernieembedding(
-    ...     texts=texts,
-    ...     user_id=None
-    ... )
-
-    >>> print(response)
-    [[0.123, 0.456, 0.789, ...], [0.123, 0.456, 0.789, ...], [0.123, 0.456, 0.789, ...]]
     """
 
     EmbeddingV1 = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/embeddings/embedding-v1"
@@ -528,25 +487,6 @@ class PromptTemplateAPI:
         **kwargs: str
     ) -> str:
         Get prompt template from Prompt Template API.
-
-    Examples
-    --------
-    >>> from wenxinworkshop import PromptTemplateAPI
-    >>> api_key = ''
-    >>> secret_key = ''
-    >>> prompttemplate = PromptTemplateAPI(
-    ...     api_key=api_key,
-    ...     secret_key=secret_key,
-    ...     url=PromptTemplateAPI.PromptTemplate
-    ... )
-
-    >>> response = prompttemplate(
-    ...     template_id=1968,
-    ...     content='侏罗纪世界'
-    ... )
-
-    >>> print(response)
-    我希望你充当一个电影评论家。你将编写一篇引人入胜和有创意的影评。你可以涵盖诸如情节、主题和基调、演技和角色、方向、配乐、电影摄影、制作设计、特效、剪辑、节奏、对话等主题。但最重要的方面是强调电影给你的感觉。什么是真正引起你的共鸣。你也可以对电影进行批评。请避免剧透。电影名称是侏罗纪世界。
     """
 
     PromptTemplate = (
@@ -638,7 +578,266 @@ class PromptTemplateAPI:
             raise ValueError(response.text)
 
 
+"""
+APIs of AI Studio.
+"""
+
+
+class AIStudioLLMAPI:
+    """
+    LLM API of AI Studio.
+
+    Attributes
+    ----------
+    url : str
+
+    model : str
+
+    authorization: str
+
+    ERNIEBot : str
+
+    Methods
+    -------
+    __init__(
+        self,
+        user_id: str,
+        access_token: str,
+        model: str = AIStudioLLMAPI.ERNIEBot
+    ) -> None:
+
+    __call__(
+        self,
+        messages: Messages,
+        temperature: Optional[float] = None,
+        top_p: Optional[float] = None,
+        penalty_score: Optional[float] = None
+    ) -> str:
+    """
+
+    ERNIEBot = "ERNIE-Bot"
+
+    def __init__(
+        self: "AIStudioLLMAPI", user_id: str, access_token: str, model: str = ERNIEBot
+    ) -> None:
+        """
+        Initialize LLM API.
+
+        Parameters
+        ----------
+        user_id : str
+            User ID of LLM API.
+
+        access_token : str
+            Access token of LLM API.
+
+        model : str, optional
+            Model of LLM API, by default AIStudioLLMAPI.ERNIEBot.
+
+        Examples
+        --------
+        >>> from wenxinworkshop import AIStudioLLMAPI
+        >>> user_id = ''
+        >>> access_token = ''
+        >>> erniebot = AIStudioLLMAPI(
+        ...     user_id=user_id,
+        ...     access_token=access_token,
+        ...     model=AIStudioLLMAPI.ERNIEBot
+        ... )
+        """
+        self.url = "https://aistudio.baidu.com/llm/lmapi/api/v1/chat/completions"
+        self.model = model
+        self.authorization = "token {} {}".format(user_id, access_token)
+
+    def __call__(
+        self: "AIStudioLLMAPI",
+        messages: Messages,
+        temperature: Optional[float] = None,
+        top_p: Optional[float] = None,
+        penalty_score: Optional[float] = None,
+    ) -> str:
+        """
+        Get response from LLM API.
+
+        Parameters
+        ----------
+        messages : Messages
+            Messages of inputs.
+
+        temperature : Optional[float], optional
+            Temperature of LLM API, by default None.
+
+        top_p : Optional[float], optional
+            Top p of LLM API, by default None.
+
+        penalty_score : Optional[float], optional
+            Penalty score of LLM API, by default None.
+
+        Returns
+        -------
+        str
+            Response from LLM API.
+
+        Raises
+        ------
+        ValueError
+            If request failed. Please check your API key and secret key. Or check the parameters.
+
+        Examples
+        --------
+        >>> message = Message(
+        ...     role='user',
+        ...     content='你好！'
+        ... )
+
+        >>> messages: Messages = [message]
+
+        >>> response = erniebot(
+        ...     messages=messages,
+        ...     temperature=None,
+        ...     top_p=None,
+        ...     penalty_score=None
+        ... )
+
+        >>> print(response)
+        你好！
+        """
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": self.authorization,
+            "SDK-Version": "0.0.2",
+        }
+
+        data = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": temperature,
+            "top_p": top_p,
+            "penalty_score": penalty_score,
+        }
+
+        response = requests.request(
+            method="POST", url=self.url, headers=headers, data=json.dumps(data)
+        )
+
+        try:
+            response_json: AIStudioChatResponse = response.json()
+            return response_json["result"]["result"]
+        except:
+            raise ValueError(response.text)
+
+
+class AIStudioEmbeddingAPI:
+    """
+    Embedding API of AI Studio.
+
+    Attributes
+    ----------
+    url : str
+
+    authorization: str
+
+    Methods
+    -------
+    __init__(
+        self,
+        user_id: str,
+        access_token: str
+    ) -> None:
+
+    __call__(
+        self,
+        texts: Texts
+    ) -> Embeddings:
+    """
+
+    def __init__(self: "AIStudioEmbeddingAPI", user_id: str, access_token: str) -> None:
+        """
+        Initialize Embedding API.
+
+        Parameters
+        ----------
+        user_id : str
+            User ID of Embedding API.
+
+        access_token : str
+            Access token of Embedding API.
+
+        Examples
+        --------
+        >>> from wenxinworkshop import AIStudioEmbeddingAPI
+        >>> user_id = ''
+        >>> access_token = ''
+        >>> ernieembedding = AIStudioEmbeddingAPI(
+        ...     user_id=user_id,
+        ...     access_token=access_token
+        ... )
+        """
+        self.url = "https://aistudio.baidu.com/llm/lmapi/api/v1/embedding"
+        self.authorization = "token {} {}".format(user_id, access_token)
+
+    def __call__(self: "AIStudioEmbeddingAPI", texts: Texts) -> Embeddings:
+        """
+        Get embeddings from Embedding API.
+
+        Parameters
+        ----------
+        texts : Texts
+            Texts of inputs.
+
+        Returns
+        -------
+        Embeddings
+            Embeddings from Embedding API.
+
+        Raises
+        ------
+        ValueError
+            If request failed. Please check your API key and secret key. Or check the parameters.
+
+        Examples
+        --------
+        >>> texts: Texts = [
+        ...     '你好！',
+        ...     '你好吗？',
+        ...     '你是谁？'
+        ... ]
+
+        >>> response = ernieembedding(
+        ...     texts=texts
+        ... )
+
+        >>> print(response)
+        [[0.123, 0.456, 0.789, ...], [0.123, 0.456, 0.789, ...], [0.123, 0.456, 0.789, ...]]
+        """
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": self.authorization,
+            "SDK-Version": "0.0.2",
+        }
+
+        data = {
+            "input": texts,
+        }
+
+        response = requests.request(
+            method="POST", url=self.url, headers=headers, data=json.dumps(data)
+        )
+
+        try:
+            response_json: AIStudioEmbeddingResponse = response.json()
+            embeddings: Embeddings = [
+                embedding["embedding"] for embedding in response_json["result"]["data"]
+            ]
+            return embeddings
+        except:
+            raise ValueError(response.text)
+
+
 if __name__ == "__main__":
+    """
+    Wenxin Workshop APIs Examples
+    """
     """
     Configurations
     """
@@ -717,3 +916,47 @@ if __name__ == "__main__":
 
     # print prompt template
     print(template)
+
+    """
+    AI Studio LLM API Examples
+    """
+    """
+    Configurations
+    """
+    # Set user ID and access token
+    user_id = ""
+    access_token = ""
+
+    # create a LLM API
+    erniebot = AIStudioLLMAPI(
+        user_id=user_id, access_token=access_token, model=AIStudioLLMAPI.ERNIEBot
+    )
+
+    # create a message
+    message = Message(role="user", content="你好！")
+
+    # create messages
+    messages: Messages = [message]
+
+    # get response from LLM API
+    response = erniebot(
+        messages=messages, temperature=None, top_p=None, penalty_score=None
+    )
+
+    # print response
+    print(response)
+
+    """
+    AI Studio Embedding API Examples
+    """
+    # create a Embedding API
+    ernieembedding = AIStudioEmbeddingAPI(user_id=user_id, access_token=access_token)
+
+    # create texts
+    texts: Texts = ["你好！", "你好吗？", "你是谁？"]
+
+    # get embeddings from Embedding API
+    embeddings = ernieembedding(texts=texts)
+
+    # print embeddings
+    print(embeddings)
