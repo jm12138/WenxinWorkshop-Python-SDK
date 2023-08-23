@@ -3,18 +3,24 @@ from typing import TypedDict, Literal
 
 
 __all__ = [
-    'Texts',
-    'Message', 'Messages',
-    'Embedding', 'Embeddings',
-    'ChatResponse', 'ChatUsage',
-    'AccessTokenResponse',
-    'PromptTemplateResult', 'PromptTemplateResponse',
-    'EmbeddingResponse', 'EmbeddingUsage', 'EmbeddingObject'
+    "Texts",
+    "Message",
+    "Messages",
+    "Embedding",
+    "Embeddings",
+    "ChatResponse",
+    "ChatUsage",
+    "AccessTokenResponse",
+    "PromptTemplateResult",
+    "PromptTemplateResponse",
+    "EmbeddingResponse",
+    "EmbeddingUsage",
+    "EmbeddingObject",
 ]
 
 
 class Message(TypedDict):
-    '''
+    """
     Message object.
 
     Attributes
@@ -32,16 +38,17 @@ class Message(TypedDict):
     ...     content='你好！'
     ... )
     {
-        'role': 'user', 
+        'role': 'user',
         'content': '你好！'
     }
-    '''
-    role: Literal['user', 'assistant']
+    """
+
+    role: Literal["user", "assistant"]
     content: str
 
 
 class ChatUsage(TypedDict):
-    '''
+    """
     Chat API usage object.
 
     Attributes
@@ -67,14 +74,15 @@ class ChatUsage(TypedDict):
         'completion_tokens': 0,
         'total_tokens': 0
     }
-    '''
+    """
+
     prompt_tokens: int
     completion_tokens: int
     total_tokens: int
 
 
 class ChatResponse(TypedDict):
-    '''
+    """
     Chat API response object.
 
     Attributes
@@ -138,14 +146,15 @@ class ChatResponse(TypedDict):
         'need_clear_history': False,
         'ban_round': 0,
         'usage': {
-            'prompt_tokens': 0, 
+            'prompt_tokens': 0,
             'completion_tokens': 0,
             'total_tokens': 0
         }
     }
-    '''
+    """
+
     id: str
-    object: Literal['chat.completion']
+    object: Literal["chat.completion"]
     created: int
     sentence_id: int
     is_end: bool
@@ -157,7 +166,7 @@ class ChatResponse(TypedDict):
 
 
 class EmbeddingObject(TypedDict):
-    '''
+    """
     Embedding API object object.
 
     Attributes
@@ -172,7 +181,7 @@ class EmbeddingObject(TypedDict):
         Index of the embedding.
 
     Examples
-    --------    
+    --------
     >>> EmbeddingObject(
     ...     object='embedding',
     ...     embedding=[
@@ -193,14 +202,15 @@ class EmbeddingObject(TypedDict):
         ],
         'index': 0
     }
-    '''
-    object: Literal['embedding']
-    embedding: 'Embedding'
+    """
+
+    object: Literal["embedding"]
+    embedding: "Embedding"
     index: int
 
 
 class EmbeddingUsage(TypedDict):
-    '''
+    """
     Embedding API usage object.
 
     Attributes
@@ -216,18 +226,19 @@ class EmbeddingUsage(TypedDict):
     >>> EmbeddingUsage(
     ...     prompt_tokens=0,
     ...     total_tokens=0
-    ... )   
-    {   
+    ... )
+    {
         'prompt_tokens': 0,
         'total_tokens': 0
     }
-    '''
+    """
+
     prompt_tokens: int
     total_tokens: int
 
 
 class EmbeddingResponse(TypedDict):
-    '''
+    """
     Embedding API response object.
 
     Attributes
@@ -289,16 +300,17 @@ class EmbeddingResponse(TypedDict):
             'total_tokens': 0
         }
     }
-    '''
+    """
+
     id: str
-    object: Literal['embedding_list']
+    object: Literal["embedding_list"]
     created: int
     data: List[EmbeddingObject]
     usage: EmbeddingUsage
 
 
 class AccessTokenResponse(TypedDict):
-    '''
+    """
     Access token response object.
 
     Attributes
@@ -339,7 +351,8 @@ class AccessTokenResponse(TypedDict):
         'scope': '...',
         'session_secret': '...'
     }
-    '''
+    """
+
     refresh_token: str
     expires_in: int
     session_key: str
@@ -349,7 +362,7 @@ class AccessTokenResponse(TypedDict):
 
 
 class PromptTemplateResult(TypedDict):
-    '''
+    """
     Prompt template result object.
 
     Attributes
@@ -372,7 +385,7 @@ class PromptTemplateResult(TypedDict):
     Examples
     --------
     >>> PromptTemplateResult(
-    ...     templateId='...',   
+    ...     templateId='...',
     ...     templateName='...',
     ...     templateContent='...',
     ...     templateVariables='...',
@@ -385,7 +398,8 @@ class PromptTemplateResult(TypedDict):
         'templateVariables': '...',
         'content': '...'
     }
-    '''
+    """
+
     templateId: str
     templateName: str
     templateContent: str
@@ -394,7 +408,7 @@ class PromptTemplateResult(TypedDict):
 
 
 class PromptTemplateResponse(TypedDict):
-    '''
+    """
     Prompt template response object.
 
     Attributes
@@ -427,14 +441,15 @@ class PromptTemplateResponse(TypedDict):
             'content': '...'
         }
     }
-    '''
+    """
+
     log_id: int
     result: PromptTemplateResult
 
 
-'''
+"""
 Type aliases.
-'''
+"""
 # A List of str
 Texts = List[str]
 

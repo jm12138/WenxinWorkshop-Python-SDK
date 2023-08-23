@@ -13,14 +13,11 @@ from .types import AccessTokenResponse
 from .types import PromptTemplateResponse
 
 
-__all__ = ['LLMAPI', 'EmbeddingAPI', 'PromptTemplateAPI', 'get_access_token']
+__all__ = ["LLMAPI", "EmbeddingAPI", "PromptTemplateAPI", "get_access_token"]
 
 
-def get_access_token(
-    api_key: str,
-    secret_key: str
-) -> str:
-    '''
+def get_access_token(api_key: str, secret_key: str) -> str:
+    """
     Get access token from Baidu AI Cloud.
 
     Parameters
@@ -51,36 +48,28 @@ def get_access_token(
     ... )
     >>> print(access_token)
     24.6b3b3f7b0b3b3f7b0b3b3f7b0b3b3f7b.2592000.1628041234.222222-44444444
-    '''
+    """
     url = "https://aip.baidubce.com/oauth/2.0/token"
 
-    headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
+    headers = {"Content-Type": "application/json", "Accept": "application/json"}
 
     params = {
-        'grant_type': 'client_credentials',
-        'client_id': api_key,
-        'client_secret': secret_key
+        "grant_type": "client_credentials",
+        "client_id": api_key,
+        "client_secret": secret_key,
     }
 
-    response = requests.request(
-        method="POST",
-        url=url,
-        headers=headers,
-        params=params
-    )
+    response = requests.request(method="POST", url=url, headers=headers, params=params)
 
     try:
         response_json: AccessTokenResponse = response.json()
-        return response_json['access_token']
+        return response_json["access_token"]
     except:
         raise ValueError(response.text)
 
 
 class LLMAPI:
-    '''
+    """
     LLM API.
 
     Attributes
@@ -154,17 +143,19 @@ class LLMAPI:
 
     >>> print(response)
     你好，有什么可以帮助你的。
-    '''
-    ERNIEBot = 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions'
-    ERNIEBot_turbo = 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/eb-instant'
+    """
+
+    ERNIEBot = (
+        "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions"
+    )
+    ERNIEBot_turbo = (
+        "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/eb-instant"
+    )
 
     def __init__(
-        self: 'LLMAPI',
-        api_key: str,
-        secret_key: str,
-        url: str = ERNIEBot
+        self: "LLMAPI", api_key: str, secret_key: str, url: str = ERNIEBot
     ) -> None:
-        '''
+        """
         Initialize LLM API.
 
         Parameters
@@ -188,24 +179,21 @@ class LLMAPI:
         ...     secret_key=secret_key,
         ...     url=LLMAPI.ERNIEBot
         ... )
-        '''
+        """
         self.url = url
-        self.access_token = get_access_token(
-            api_key=api_key,
-            secret_key=secret_key
-        )
+        self.access_token = get_access_token(api_key=api_key, secret_key=secret_key)
 
     def __call__(
-        self: 'LLMAPI',
+        self: "LLMAPI",
         messages: Messages,
         temperature: Optional[float] = None,
         top_p: Optional[float] = None,
         penalty_score: Optional[float] = None,
         stream: Optional[bool] = None,
         user_id: Optional[str] = None,
-        chunk_size: int = 512
+        chunk_size: int = 512,
     ) -> Union[str, Generator[str, None, None]]:
-        '''
+        """
         Get response from LLM API.
 
         Parameters
@@ -275,22 +263,18 @@ class LLMAPI:
         >>> for item in response_stream:
         ...     print(item, end='')
         你好，有什么可以帮助你的。
-        '''
-        headers = {
-            'Content-Type': 'application/json'
-        }
+        """
+        headers = {"Content-Type": "application/json"}
 
-        params = {
-            'access_token': self.access_token
-        }
+        params = {"access_token": self.access_token}
 
         data = {
-            'messages': messages,
-            'temperature': temperature,
-            'top_p': top_p,
-            'penalty_score': penalty_score,
-            'stream': stream,
-            'user_id': user_id
+            "messages": messages,
+            "temperature": temperature,
+            "top_p": top_p,
+            "penalty_score": penalty_score,
+            "stream": stream,
+            "user_id": user_id,
         }
 
         response = requests.request(
@@ -299,27 +283,23 @@ class LLMAPI:
             headers=headers,
             params=params,
             data=json.dumps(data),
-            stream=stream
+            stream=stream,
         )
 
         if stream:
-            return self.stream_response(
-                response=response,
-                chunk_size=chunk_size
-            )
+            return self.stream_response(response=response, chunk_size=chunk_size)
         else:
             try:
                 response_json: ChatResponse = response.json()
-                return response_json['result']
+                return response_json["result"]
             except:
                 raise ValueError(response.text)
 
     @staticmethod
     def stream_response(
-        response: requests.Response,
-        chunk_size: int = 512
+        response: requests.Response, chunk_size: int = 512
     ) -> Generator[str, None, None]:
-        '''
+        """
         Stream response from LLM API.
 
         Parameters
@@ -350,21 +330,20 @@ class LLMAPI:
         >>> for item in stream_response:
         ...     print(item, end='')
         你好，有什么可以帮助你的。
-        '''
+        """
         for response_line in response.iter_lines(
-            chunk_size=chunk_size,
-            decode_unicode=True
+            chunk_size=chunk_size, decode_unicode=True
         ):
             if response_line:
                 try:
                     response_json: ChatResponse = json.loads(response_line[5:])
-                    yield response_json['result']
+                    yield response_json["result"]
                 except:
                     raise ValueError(response_line)
 
 
 class EmbeddingAPI:
-    '''
+    """
     Embedding API.
 
     Attributes
@@ -419,16 +398,14 @@ class EmbeddingAPI:
 
     >>> print(response)
     [[0.123, 0.456, 0.789, ...], [0.123, 0.456, 0.789, ...], [0.123, 0.456, 0.789, ...]]
-    '''
-    EmbeddingV1 = 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/embeddings/embedding-v1'
+    """
+
+    EmbeddingV1 = "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/embeddings/embedding-v1"
 
     def __init__(
-        self: 'EmbeddingAPI',
-        api_key: str,
-        secret_key: str,
-        url: str = EmbeddingV1
+        self: "EmbeddingAPI", api_key: str, secret_key: str, url: str = EmbeddingV1
     ) -> None:
-        '''
+        """
         Initialize Embedding API.
 
         Parameters
@@ -452,19 +429,14 @@ class EmbeddingAPI:
         ...     secret_key=secret_key,
         ...     url=EmbeddingAPI.EmbeddingV1
         ... )
-        '''
+        """
         self.url = url
-        self.access_token = get_access_token(
-            api_key=api_key,
-            secret_key=secret_key
-        )
+        self.access_token = get_access_token(api_key=api_key, secret_key=secret_key)
 
     def __call__(
-        self: 'EmbeddingAPI',
-        texts: Texts,
-        user_id: Optional[str] = None
+        self: "EmbeddingAPI", texts: Texts, user_id: Optional[str] = None
     ) -> Embeddings:
-        '''
+        """
         Get embeddings from Embedding API.
 
         Parameters
@@ -500,33 +472,25 @@ class EmbeddingAPI:
 
         >>> print(response)
         [[0.123, 0.456, 0.789, ...], [0.123, 0.456, 0.789, ...], [0.123, 0.456, 0.789, ...]]
-        '''
-        headers = {
-            'Content-Type': 'application/json'
-        }
+        """
+        headers = {"Content-Type": "application/json"}
 
-        params = {
-            'access_token': self.access_token
-        }
+        params = {"access_token": self.access_token}
 
-        data = {
-            'input': texts,
-            'user_id': user_id
-        }
+        data = {"input": texts, "user_id": user_id}
 
         response = requests.request(
             method="POST",
             url=self.url,
             headers=headers,
             params=params,
-            data=json.dumps(data)
+            data=json.dumps(data),
         )
 
         try:
             response_json: EmbeddingResponse = response.json()
             embeddings: Embeddings = [
-                embedding['embedding']
-                for embedding in response_json['data']
+                embedding["embedding"] for embedding in response_json["data"]
             ]
             return embeddings
         except:
@@ -534,7 +498,7 @@ class EmbeddingAPI:
 
 
 class PromptTemplateAPI:
-    '''
+    """
     Prompt Template API.
 
     Attributes
@@ -551,7 +515,7 @@ class PromptTemplateAPI:
     Methods
     -------
     __init__(
-        self,   
+        self,
         api_key: str,
         secret_key: str,
         url: str = PromptTemplate
@@ -583,16 +547,19 @@ class PromptTemplateAPI:
 
     >>> print(response)
     我希望你充当一个电影评论家。你将编写一篇引人入胜和有创意的影评。你可以涵盖诸如情节、主题和基调、演技和角色、方向、配乐、电影摄影、制作设计、特效、剪辑、节奏、对话等主题。但最重要的方面是强调电影给你的感觉。什么是真正引起你的共鸣。你也可以对电影进行批评。请避免剧透。电影名称是侏罗纪世界。
-    '''
-    PromptTemplate = 'https://aip.baidubce.com/rest/2.0/wenxinworkshop/api/v1/template/info'
+    """
+
+    PromptTemplate = (
+        "https://aip.baidubce.com/rest/2.0/wenxinworkshop/api/v1/template/info"
+    )
 
     def __init__(
-        self: 'PromptTemplateAPI',
+        self: "PromptTemplateAPI",
         api_key: str,
         secret_key: str,
-        url: str = PromptTemplate
+        url: str = PromptTemplate,
     ) -> None:
-        '''
+        """
         Initialize Prompt Template API.
 
         Parameters
@@ -616,15 +583,12 @@ class PromptTemplateAPI:
         ...     secret_key=secret_key,
         ...     url=PromptTemplateAPI.PromptTemplate
         ... )
-        '''
+        """
         self.url = url
-        self.access_token = get_access_token(
-            api_key=api_key,
-            secret_key=secret_key
-        )
+        self.access_token = get_access_token(api_key=api_key, secret_key=secret_key)
 
     def __call__(self, template_id: int, **kwargs: str) -> str:
-        '''
+        """
         Get prompt template from Prompt Template API.
 
         Parameters
@@ -654,54 +618,42 @@ class PromptTemplateAPI:
 
         >>> print(response)
 
-        '''
-        headers = {
-            'Content-Type': 'application/json'
-        }
+        """
+        headers = {"Content-Type": "application/json"}
 
         params: Dict[str, Union[str, int]] = {
-            'access_token': self.access_token,
-            'id': template_id,
-            **kwargs
+            "access_token": self.access_token,
+            "id": template_id,
+            **kwargs,
         }
 
         response = requests.request(
-            method="GET",
-            url=self.url,
-            headers=headers,
-            params=params
+            method="GET", url=self.url, headers=headers, params=params
         )
 
         try:
             response_json: PromptTemplateResponse = response.json()
-            return response_json['result']['content']
+            return response_json["result"]["content"]
         except:
             raise ValueError(response.text)
 
 
 if __name__ == "__main__":
-    '''
+    """
     Configurations
-    '''
+    """
     # Set API key and Secret key
-    api_key = ''
-    secret_key = ''
+    api_key = ""
+    secret_key = ""
 
-    '''
+    """
     LLM API Examples
-    '''
+    """
     # create a LLM API
-    erniebot = LLMAPI(
-        api_key=api_key,
-        secret_key=secret_key,
-        url=LLMAPI.ERNIEBot
-    )
+    erniebot = LLMAPI(api_key=api_key, secret_key=secret_key, url=LLMAPI.ERNIEBot)
 
     # create a message
-    message = Message(
-        role='user',
-        content='你好！'
-    )
+    message = Message(role="user", content="你好！")
 
     # create messages
     messages: Messages = [message]
@@ -714,7 +666,7 @@ if __name__ == "__main__":
         penalty_score=None,
         stream=None,
         user_id=None,
-        chunk_size=512
+        chunk_size=512,
     )
 
     # print response
@@ -728,54 +680,40 @@ if __name__ == "__main__":
         penalty_score=None,
         stream=True,
         user_id=None,
-        chunk_size=512
+        chunk_size=512,
     )
 
     # print response stream
     for item in response_stream:
-        print(item, end='')
+        print(item, end="")
 
-    '''
+    """
     Embedding API Examples
-    '''
+    """
     # create a Embedding API
     ernieembedding = EmbeddingAPI(
-        api_key=api_key,
-        secret_key=secret_key,
-        url=EmbeddingAPI.EmbeddingV1
+        api_key=api_key, secret_key=secret_key, url=EmbeddingAPI.EmbeddingV1
     )
 
     # create texts
-    texts: Texts = [
-        '你好！',
-        '你好吗？',
-        '你是谁？'
-    ]
+    texts: Texts = ["你好！", "你好吗？", "你是谁？"]
 
     # get embeddings from Embedding API
-    embeddings = ernieembedding(
-        texts=texts,
-        user_id=None
-    )
+    embeddings = ernieembedding(texts=texts, user_id=None)
 
     # print embeddings
     print(embeddings)
 
-    '''
+    """
     Prompt Template API Examples
-    '''
+    """
     # create a Prompt Template API
     prompttemplate = PromptTemplateAPI(
-        api_key=api_key,
-        secret_key=secret_key,
-        url=PromptTemplateAPI.PromptTemplate
+        api_key=api_key, secret_key=secret_key, url=PromptTemplateAPI.PromptTemplate
     )
 
     # get prompt template from Prompt Template API
-    template = prompttemplate(
-        template_id=1968,
-        content='侏罗纪世界'
-    )
+    template = prompttemplate(template_id=1968, content="侏罗纪世界")
 
     # print prompt template
     print(template)
